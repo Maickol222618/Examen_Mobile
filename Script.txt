@@ -1,0 +1,54 @@
+import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileElement;
+import io.appium.java_client.android.AndroidDriver;
+import (link unavailable);
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+ 
+public class CarritoDeComprasTest {
+    private AppiumDriver<MobileElement> driver;
+ 
+    @BeforeMethod
+    public void setup() {
+        // Configuración del driver
+driver = new AndroidDriver<>(new URL("http://localhost:4723/wd/hub"), new DesiredCapabilities());
+    }
+ 
+    @Test(dataProvider = "productos")
+    public void testAgregarProducto(String producto, int unidades) {
+        // Cargar la aplicación
+        driver.get("(link unavailable)");
+ 
+        // Agregar producto al carrito
+        MobileElement productoElement = driver.findElement(By.xpath("//android.widget.TextView[@text='" + producto + "']"));
+productoElement.click();
+        driver.findElement(By.xpath("//android.widget.Button[@text='Add to cart']")).click();
+ 
+        // Validar que el producto se agregó correctamente al carrito
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until(ExpectedConditions.textToBePresentInElement(driver.findElement(By.xpath("//android.widget.TextView[@text='Cart']")), String.valueOf(unidades)));
+ 
+        // Validar que el carrito de compra se actualizó correctamente
+        driver.findElement(By.xpath("//android.widget.Button[@text='Cart']")).click();
+        wait.until(ExpectedConditions.textToBePresentInElement(driver.findElement(By.xpath("//android.widget.TextView[@text='Total']")), String.valueOf(unidades * 10)));
+    }
+ 
+    @DataProvider(name = "productos")
+    public Object[][] productos() {
+        return new Object[][]{
+                {"Sauce Labs Backpack", 1},
+                {"Sauce Labs Bolt - T-Shirt", 1},
+                {"Sauce Labs Bike Light", 2}
+        };
+    }
+ 
+    @AfterMethod
+    public void tearDown() {
+        driver.quit();
+    }
+}

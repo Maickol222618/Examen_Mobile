@@ -1,0 +1,17 @@
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+ 
+public class Reporte {
+    public static void main(String[] args) {
+        ExtentReports report = new ExtentReports("reporte.pdf");
+        ExtentTest test = report.createTest("Carrito de compras");
+ 
+        test.log(Status.INFO, "Iniciar sesión");
+        test.log(Status.PASS, "Agregar producto al carrito");
+        test.log(Status.PASS, "Validar que el producto se agregó correctamente al carrito");
+        test.log(Status.PASS, "Validar que el carrito de compra se actualizó correctamente");
+ 
+        report.flush();
+    }
+}
